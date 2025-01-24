@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "deploy-testnet": "hardhat ignition deploy ./ignition/modules/Token.js --network sepolia",
+    "deploy-testnet": "hardhat ignition deploy ./ignition/modules/TheoCoin.js --network sepolia",
     "test": "hardhat test"
   },
   "keywords": [],
@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@openzeppelin/contracts": "^5.2.0",
     "ethers": "^6.13.5"
   },
   "devDependencies": {
