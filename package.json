@@ -1,0 +1,20 @@
+{
+  "name": "cryptotest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "deploy-testnet": "hardhat ignition deploy ./ignition/modules/Token.js --network sepolia",
+    "test": "hardhat test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "ethers": "^6.13.5"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.18"
+  }
+}
