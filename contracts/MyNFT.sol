@@ -48,7 +48,7 @@ contract MyNFT is IERC721 {
     }
 
     function ownerOf(uint256 _tokenId) external view returns (address) {
-        if (isValidToken(_tokenId)) {
+        if (!isValidToken(_tokenId)) {
             revert TokenNotExist();
         }
 
@@ -57,7 +57,7 @@ contract MyNFT is IERC721 {
 
     function transferFrom(address _from, address _to, uint256 _tokenId) external {
         address ownerAddress = getOwner(_tokenId);
-        if (isValidToken(_tokenId)) {
+        if (!isValidToken(_tokenId)) {
             revert TokenNotExist();
         }
 
@@ -85,7 +85,7 @@ contract MyNFT is IERC721 {
 
     function approve(address _approved, uint256 _tokenId) external {
         address ownerAddress = getOwner(_tokenId);
-        if (!(isOwner(_tokenId, msg.sender)) || !(isOperator(_tokenId, ownerAddress, msg.sender))) {
+        if (!(isOwner(_tokenId, msg.sender)) && !(isOperator(_tokenId, ownerAddress, msg.sender))) {
             revert NotOwner();
         }
 
