@@ -4,27 +4,70 @@ const {
 } = require('@openzeppelin/test-helpers');
 
 describe("Token contract", function () {
-    it("Can transfer token and check the balance", async function () {
-        const [owner, toto] = await ethers.getSigners();
 
-        const hardhatToken = await ethers.deployContract("Token");
+    let hardhatToken;
+    let owner, toto;
 
-        expect(await hardhatToken.balanceOf(owner.address)).to.equal(1_000_000);
-        expect(await hardhatToken.balanceOf(toto.address)).to.equal(0);
+    before(async () => {
+        [owner, toto] = await ethers.getSigners();
+    })
 
-        await hardhatToken.transfer(toto.address, 500_000);
+    beforeEach(async() => {
+        hardhatToken = await ethers.deployContract("Token");
+    })
 
-        expect(await hardhatToken.balanceOf(owner.address)).to.equal(500_000);
-        expect(await hardhatToken.balanceOf(toto.address)).to.equal(500_000);
+    describe("transfer()", async () => {
+        it("Can transfer token", async function () {
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(1_000_000);
+            expect(await hardhatToken.balanceOf(toto.address)).to.equal(0);
+
+            await hardhatToken.transfer(toto.address, 500_000);
+
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(500_000);
+            expect(await hardhatToken.balanceOf(toto.address)).to.equal(500_000);
+        });
+
+        it("Cannot transfer token because not enough token", async function () {
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(1_000_000);
+            expect(await hardhatToken.balanceOf(toto.address)).to.equal(0);
+
+            await expect(hardhatToken.transfer(toto.address, 1_500_000)).to.be.revertedWith("Not enough tokens");
+        });
+
+        it("Transfer emit event", async function () {
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(1_000_000);
+            expect(await hardhatToken.balanceOf(toto.address)).to.equal(0);
+
+            await expect(hardhatToken.transfer(toto.address, 500_000))
+                .to.emit(hardhatToken, "Transfer")
+                .withArgs(owner.address, toto.address, 500_000);
+        });
+
+    })
+    describe("balanceOf()", () => {
+        it("Can check the balance", async function () {
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(1_000_000);
+            expect(await hardhatToken.balanceOf(toto.address)).to.equal(0);
+
+            await hardhatToken.transfer(toto.address, 500_000);
+
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(500_000);
+            expect(await hardhatToken.balanceOf(toto.address)).to.equal(500_000);
+        });
+
+        it("Can check the balance of address(0)", async function () {
+            expect(await hardhatToken.totalSupply()).to.equal(1_000_000);
+
+            expect(await hardhatToken.balanceOf(constants.ZERO_ADDRESS)).to.equal(0);
+        });
     });
 
-    it("Total supply is 1 000 000", async function () {
-        const [owner, toto] = await ethers.getSigners();
-
-        const hardhatToken = await ethers.deployContract("Token");
-
-        expect(await hardhatToken.totalSupply()).to.equal(1_000_000);
+    describe('misc', () => {
+        it("Check the total supply", async function () {
+            expect(await hardhatToken.totalSupply()).to.equal(1_000_000);
+        });
     });
+
 });
 
 describe("NFT", function () {
