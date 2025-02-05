@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const {
-    constants,
+    constants, expectRevert,
 } = require('@openzeppelin/test-helpers');
 
 describe("Token contract", function () {
@@ -41,6 +41,15 @@ describe("Token contract", function () {
             await expect(hardhatToken.transfer(toto.address, 500_000))
                 .to.emit(hardhatToken, "Transfer")
                 .withArgs(owner.address, toto.address, 500_000);
+        });
+
+        it("Transfer int max value", async function () {
+            //wait hardhatToken.transfer(toto.address, constants.MAX_INT256);
+           await expect(hardhatToken.transfer(toto.address, constants.MAX_INT256)).to.be.reverted;
+        });
+
+        it("Transfer int min value", async function () {
+            await hardhatToken.transfer(toto.address, -1);
         });
 
     })
